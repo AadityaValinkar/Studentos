@@ -1,15 +1,20 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { supabaseClient } from "@/lib/supabase-client";
 import BeamsBackground from "@/components/ui/beams-background";
 import { useState } from "react";
 
 export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleGoogleLogin = () => {
+    const handleGoogleLogin = async () => {
         setIsLoading(true);
-        signIn("google", { callbackUrl: "/" });
+        await supabaseClient.auth.signInWithOAuth({
+            provider: "google",
+            options: {
+                redirectTo: typeof window !== "undefined" ? window.location.origin : undefined
+            }
+        });
     };
 
     return (
