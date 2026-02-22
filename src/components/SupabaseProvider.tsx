@@ -16,10 +16,16 @@ const SupabaseContext = createContext<SupabaseContextType>({
     isLoading: true,
 });
 
-export function SupabaseProvider({ children }: { children: React.ReactNode }) {
-    const [session, setSession] = useState<Session | null>(null);
-    const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+export function SupabaseProvider({
+    children,
+    initialSession,
+}: {
+    children: React.ReactNode;
+    initialSession: Session | null;
+}) {
+    const [session, setSession] = useState<Session | null>(initialSession);
+    const [user, setUser] = useState<User | null>(initialSession?.user ?? null);
+    const [isLoading, setIsLoading] = useState(!initialSession); // only load if we lack a session initially
 
     useEffect(() => {
         const {
@@ -30,16 +36,18 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
             setIsLoading(false);
         });
 
-        supabaseClient.auth.getSession().then(({ data: { session: initialSession } }) => {
-            setSession(initialSession);
-            setUser(initialSession?.user ?? null);
-            setIsLoading(false);
-        });
+        if (!initialSession) {
+            supabaseClient.auth.getSession().then(({ data: { session: currentSession } }) => {
+                setSession(currentSession);
+                setUser(currentSession?.user ?? null);
+                setIsLoading(false);
+            });
+        }
 
         return () => {
             subscription.unsubscribe();
         };
-    }, []);
+    }, [initialSession]);
 
     return (
         <SupabaseContext.Provider value={{ session, user, isLoading }}>

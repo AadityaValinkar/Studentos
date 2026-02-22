@@ -12,15 +12,20 @@ export const metadata: Metadata = {
   description: 'A comprehensive career intelligence system for students.',
 }
 
-export default function RootLayout({
+import { createClient } from '@/lib/supabase-server'
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const supabase = createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+
   return (
     <html lang="en" className="dark">
       <body className={`${interTight.className} bg-[#0a0a0a] text-foreground antialiased selection:bg-indigo-500/30`}>
-        <Providers>
+        <Providers initialSession={session}>
           {/* Noise Overlay */}
           <div className="noise-overlay"></div>
           <CommandPalette />

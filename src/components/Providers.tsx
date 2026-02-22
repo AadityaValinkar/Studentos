@@ -1,11 +1,11 @@
-"use client";
 import { SupabaseProvider } from "@/components/SupabaseProvider";
 import { ThemeProvider } from "next-themes";
+import { type Session } from "@supabase/supabase-js";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children, initialSession }: { children: React.ReactNode, initialSession: Session | null }) {
     return (
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
-            <SupabaseProvider>{children}</SupabaseProvider>
+            <SupabaseProvider initialSession={initialSession}>{children}</SupabaseProvider>
         </ThemeProvider>
     );
 }
