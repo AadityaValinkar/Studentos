@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 }
 
 import { createClient } from '@/lib/supabase-server'
+import { UsernameSetupModal } from '@/components/ui/username-setup-modal'
 
 export default async function RootLayout({
   children,
@@ -22,12 +23,27 @@ export default async function RootLayout({
   const supabase = createClient();
   const { data: { session }, error } = await supabase.auth.getSession();
 
+  let needsProfile = false;
+
+  if (session?.user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('global_username')
+      .eq('id', session.user.id)
+      .single();
+
+    if (!profile || !profile.global_username) {
+      needsProfile = true;
+    }
+  }
+
   console.log("SERVER SSR SESSION:", session ? "Exists" : "Null", "| ERROR:", error);
 
   return (
     <html lang="en" className="dark">
       <body className={`${interTight.className} bg-[#0a0a0a] text-foreground antialiased selection:bg-indigo-500/30`}>
         <Providers initialSession={session}>
+          <UsernameSetupModal isOpen={needsProfile} />
           {/* Noise Overlay */}
           <div className="noise-overlay"></div>
           <CommandPalette />
