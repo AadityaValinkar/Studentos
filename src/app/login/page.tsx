@@ -12,7 +12,7 @@ export default function LoginPage() {
         await supabaseClient.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: typeof window !== "undefined" ? window.location.origin : undefined
+                redirectTo: typeof window !== "undefined" ? `${window.location.origin}/auth/callback?next=/dashboard` : undefined
             }
         });
     };
