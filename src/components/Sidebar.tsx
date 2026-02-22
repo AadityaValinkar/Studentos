@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Calendar, Map, Activity, Layers, Settings, LogIn, Info, Target, Sun, Moon } from 'lucide-react';
+import { Home, Calendar, Map, Activity, Layers, Settings, LogIn, Info, Target, Sun, Moon, Users } from 'lucide-react';
 import { useSession } from "@/lib/useSession";
 import { motion } from "motion/react";
 import ProfileDropdown from './ui/profile-dropdown';
@@ -33,6 +33,7 @@ export default function Sidebar() {
         { icon: Map, label: 'Campus Map', href: '/map' },
         { icon: Activity, label: 'Bunk Calc', href: '/bunk' },
         { label: "Internships", href: "/internships", icon: Layers },
+        { label: "Communities", href: "/communities", icon: Users },
         { label: "Why OS", href: "/why-os", icon: Info },
         { label: "Settings", href: "/settings", icon: Settings },
     ];
