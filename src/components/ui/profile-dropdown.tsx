@@ -86,7 +86,12 @@ export default function ProfileDropdown({
                     <DropdownMenuTrigger asChild>
                         <button
                             type="button"
-                            className="flex items-center gap-3 p-3 rounded-2xl bg-white dark:bg-[#151821] border border-zinc-200/60 dark:border-white/10 hover:border-zinc-300 dark:hover:border-white/20 hover:bg-zinc-50/80 dark:hover:bg-white/5 hover:shadow-sm transition-all duration-200 focus:outline-none w-full"
+                            className={cn(
+                                "flex items-center gap-3 p-3 rounded-2xl border transition-all duration-200 focus:outline-none w-full",
+                                isOpen
+                                    ? "bg-zinc-50/80 dark:bg-white/5 border-zinc-300 dark:border-white/20 shadow-sm"
+                                    : "bg-white dark:bg-[#151821] border-zinc-200/60 dark:border-white/10 hover:border-zinc-300 dark:hover:border-white/20 hover:bg-zinc-50/80 dark:hover:bg-white/5 hover:shadow-sm"
+                            )}
                         >
                             <div className="text-left flex-1 min-w-0 pr-1">
                                 <div className="text-sm font-medium text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight truncate">
@@ -112,43 +117,13 @@ export default function ProfileDropdown({
                         </button>
                     </DropdownMenuTrigger>
 
-                    {/* Bending line indicator on the right */}
-                    <div
-                        className={cn(
-                            "absolute -right-3 top-1/2 -translate-y-1/2 transition-all duration-200",
-                            isOpen
-                                ? "opacity-100"
-                                : "opacity-60 group-hover:opacity-100"
-                        )}
-                    >
-                        <svg
-                            width="12"
-                            height="24"
-                            viewBox="0 0 12 24"
-                            fill="none"
-                            className={cn(
-                                "transition-all duration-200",
-                                isOpen
-                                    ? "text-indigo-500 dark:text-indigo-400 scale-110"
-                                    : "text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-600 dark:group-hover:text-zinc-300"
-                            )}
-                            aria-hidden="true"
-                        >
-                            <path
-                                d="M2 4C6 8 6 16 2 20"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                fill="none"
-                            />
-                        </svg>
-                    </div>
+
 
                     <DropdownMenuContent
                         side="top"
                         align="center"
-                        sideOffset={8}
-                        className="w-[230px] p-2 bg-white/95 dark:bg-[#151821]/95 backdrop-blur-sm border border-zinc-200/60 dark:border-white/10 rounded-2xl shadow-xl shadow-zinc-900/5 dark:shadow-zinc-950/20 
+                        sideOffset={20}
+                        className="w-[210px] p-2 bg-white/95 dark:bg-[#151821]/95 backdrop-blur-sm border border-zinc-200/60 dark:border-white/10 rounded-2xl shadow-xl shadow-zinc-900/5 dark:shadow-zinc-950/20 
                     data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-bottom"
                     >
                         <div className="space-y-1">
