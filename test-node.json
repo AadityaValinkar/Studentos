@@ -1,0 +1,38 @@
+{
+  "width": 221,
+  "height": 490,
+  "id": "0-AijuwIdYdGuiNnne4Yg",
+  "type": "paragraph",
+  "position": {
+    "x": -638.3075746114723,
+    "y": 2244.029159876233
+  },
+  "selected": false,
+  "data": {
+    "label": "",
+    "style": {
+      "fontSize": 17,
+      "justifyContent": "flex-end",
+      "textAlign": "center",
+      "borderColor": "#000000",
+      "backgroundColor": "WHITe"
+    },
+    "oldId": "Tqv7Lj8TklDTrZH5_fmUf"
+  },
+  "zIndex": 999,
+  "style": {
+    "width": 221,
+    "height": 490
+  },
+  "resizing": false,
+  "dragging": false,
+  "positionAbsolute": {
+    "x": -638.3075746114723,
+    "y": 2244.029159876233
+  },
+  "focusable": true,
+  "measured": {
+    "width": 221,
+    "height": 490
+  }
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "yHmHXymPNWwu8p1vvqD3o",
+    "label": "Find the detailed version of this roadmap along with other similar roadmaps",
+    "type": "paragraph",
+    "y": -288.15106699547107
+  },
+  {
+    "id": "2zqZkyVgigifcRS1H7F_b",
+    "label": "roadmap.sh",
+    "type": "button",
+    "y": -206.1655035777258
+  },
+  {
+    "id": "LEijbLyxg4RyutKEM2Y5g",
+    "label": "vertical node",
+    "type": "vertical",
+    "y": -202.5992517776511
+  },
+  {
+    "id": "MfErpYwkJ0wiWJZEUVfrb",
+    "label": "Visit Beginner Friendly Version",
+    "type": "button",
+    "y": -153.72969257809785
+  },
+  {
+    "id": "jJebnKe4JftMXZ1lCsipq",
+    "label": "Front-end",
+    "type": "title",
+    "y": -100.59925177765109
+  },
+  {
+    "id": "yCnn-NfSxIybUQ2iTuUGq",
+    "label": "How does the internet work?",
+    "type": "subtopic",
+    "y": -94.72969257809785
+  },
+  {
+    "id": "R12sArWVpbIs_PHxBqVaR",
+    "label": "What is HTTP?",
+    "type": "subtopic",
+    "y": -40.729692578097854
+  },
+  {
+    "id": "PCirR2QiFYO89Fm-Ev3o1",
+    "label": "Learn the basics",
+    "type": "subtopic",
+    "y": -37.48450673924191
+  },
+  {
+    "id": "ZhSuu2VArnzPDp6dPQQSC",
+    "label": "What is Domain Name?",
+    "type": "subtopic",
+    "y": 13.270307421902146
+  },
+  {
+    "id": "z8-556o-PaHXjlytrawaF",
+    "label": "Writing Semantic HTML",
+    "type": "subtopic",
+    "y": 16.51549326075809
+  }
+]
