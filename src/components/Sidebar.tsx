@@ -12,7 +12,12 @@ import { useTheme } from 'next-themes';
 import Image from 'next/image';
 
 export default function Sidebar() {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
+
+    useEffect(() => {
+        console.log("UI SESSION STATUS:", status);
+        console.log("UI USER:", session?.user);
+    }, [status, session]);
     const [isExpanded, setIsExpanded] = useState(false);
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
