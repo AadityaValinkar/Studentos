@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { Settings, CreditCard, FileText, LogOut, User } from "lucide-react";
+import { Settings, CreditCard, FileText, LogOut, User, Target } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -52,32 +52,30 @@ export default function ProfileDropdown({
     const [isOpen, setIsOpen] = React.useState(false);
     const menuItems: MenuItem[] = [
         {
-            label: "Profile",
-            href: "#",
+            label: "Edit Profile",
+            href: "/settings?tab=profile",
             icon: <User className="w-4 h-4" />,
         },
         {
-            label: "Model",
-            value: data.model,
-            href: "#",
-            icon: <GeminiIcon className="w-4 h-4" />,
+            label: "Set Goals",
+            href: "/dashboard?action=set-goal",
+            icon: <Target className="w-4 h-4" />,
         },
         {
             label: "Subscription",
             value: data.subscription,
-            href: "#",
+            href: "/settings?tab=billing",
             icon: <CreditCard className="w-4 h-4" />,
         },
         {
             label: "Settings",
-            href: "#",
+            href: "/settings",
             icon: <Settings className="w-4 h-4" />,
         },
         {
-            label: "Terms & Policies",
-            href: "#",
+            label: "Help & Support",
+            href: "/help",
             icon: <FileText className="w-4 h-4" />,
-            external: true,
         },
     ];
 
@@ -88,17 +86,17 @@ export default function ProfileDropdown({
                     <DropdownMenuTrigger asChild>
                         <button
                             type="button"
-                            className="flex items-center gap-16 p-3 rounded-2xl bg-white dark:bg-[#151821] border border-zinc-200/60 dark:border-white/10 hover:border-zinc-300 dark:hover:border-white/20 hover:bg-zinc-50/80 dark:hover:bg-white/5 hover:shadow-sm transition-all duration-200 focus:outline-none w-full"
+                            className="flex items-center gap-3 p-3 rounded-2xl bg-white dark:bg-[#151821] border border-zinc-200/60 dark:border-white/10 hover:border-zinc-300 dark:hover:border-white/20 hover:bg-zinc-50/80 dark:hover:bg-white/5 hover:shadow-sm transition-all duration-200 focus:outline-none w-full"
                         >
-                            <div className="text-left flex-1">
-                                <div className="text-sm font-medium text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight">
+                            <div className="text-left flex-1 min-w-0 pr-1">
+                                <div className="text-sm font-medium text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight truncate">
                                     {data.name}
                                 </div>
-                                <div className="text-xs text-zinc-500 dark:text-zinc-400 tracking-tight leading-tight">
+                                <div className="text-xs text-zinc-500 dark:text-zinc-400 tracking-tight leading-tight truncate">
                                     {data.email}
                                 </div>
                             </div>
-                            <div className="relative">
+                            <div className="relative shrink-0">
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-400 p-0.5">
                                     <div className="w-full h-full rounded-full overflow-hidden bg-white dark:bg-zinc-900">
                                         <Image
@@ -147,10 +145,11 @@ export default function ProfileDropdown({
                     </div>
 
                     <DropdownMenuContent
-                        align="end"
-                        sideOffset={4}
-                        className="w-64 p-2 bg-white/95 dark:bg-[#151821]/95 backdrop-blur-sm border border-zinc-200/60 dark:border-white/10 rounded-2xl shadow-xl shadow-zinc-900/5 dark:shadow-zinc-950/20 
-                    data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-top-right"
+                        side="top"
+                        align="center"
+                        sideOffset={8}
+                        className="w-[230px] p-2 bg-white/95 dark:bg-[#151821]/95 backdrop-blur-sm border border-zinc-200/60 dark:border-white/10 rounded-2xl shadow-xl shadow-zinc-900/5 dark:shadow-zinc-950/20 
+                    data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-bottom"
                     >
                         <div className="space-y-1">
                             {menuItems.map((item) => (
