@@ -11,8 +11,8 @@ export default async function CommunitiesPage() {
     const supabase = createClient();
 
     // Redirect if not authenticated
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
         redirect("/login");
     }
 
@@ -21,7 +21,7 @@ export default async function CommunitiesPage() {
     const { data: profile } = await supabase
         .from("profiles")
         .select("id, global_username")
-        .eq("id", session.user.id)
+        .eq("id", user.id)
         .single();
 
     if (!profile) {

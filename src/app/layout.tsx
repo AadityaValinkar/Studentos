@@ -21,15 +21,18 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const supabase = createClient();
-  const { data: { session }, error } = await supabase.auth.getSession();
+  const [{ data: { session } }, { data: { user }, error }] = await Promise.all([
+    supabase.auth.getSession(),
+    supabase.auth.getUser()
+  ]);
 
   let needsProfile = false;
 
-  if (session?.user) {
+  if (user) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('global_username')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .single();
 
     if (!profile || !profile.global_username) {
