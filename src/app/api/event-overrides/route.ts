@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { createClient } from "@/lib/supabase-server";
 import { supabase } from "@/lib/supabase";
 
 // GET all overrides for the logged in user
 export async function GET() {
     try {
-        const session = await getServerSession();
+        const supabaseAuth = createClient();
+        const { data: { session } } = await supabaseAuth.auth.getSession();
         if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
@@ -39,7 +40,8 @@ export async function GET() {
 // PATCH an override (hide or replace a system event)
 export async function PATCH(req: NextRequest) {
     try {
-        const session = await getServerSession();
+        const supabaseAuth = createClient();
+        const { data: { session } } = await supabaseAuth.auth.getSession();
         if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }

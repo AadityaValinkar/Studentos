@@ -13,7 +13,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { GeminiIcon } from "../icons/gemini";
-import { signOut } from "next-auth/react";
+import { signOut } from "@/lib/useSession";
 
 interface Profile {
     name: string;

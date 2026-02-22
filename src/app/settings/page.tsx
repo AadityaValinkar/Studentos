@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut } from "@/lib/useSession";
 import Image from "next/image";
 import { User, Shield, Monitor } from "lucide-react";
 

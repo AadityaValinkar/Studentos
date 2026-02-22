@@ -1,11 +1,11 @@
 "use client";
-import { SessionProvider } from "next-auth/react";
+import { SupabaseProvider } from "@/components/SupabaseProvider";
 import { ThemeProvider } from "next-themes";
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
-            <SessionProvider>{children}</SessionProvider>
+            <SupabaseProvider>{children}</SupabaseProvider>
         </ThemeProvider>
     );
 }

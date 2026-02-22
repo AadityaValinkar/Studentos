@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { createClient } from "@/lib/supabase-server";
 import { supabase } from "@/lib/supabase";
 
 // ... existing GET and POST ...
@@ -7,7 +7,8 @@ import { supabase } from "@/lib/supabase";
 // GET all custom events for the logged in user (optional range query)
 export async function GET(req: NextRequest) {
     try {
-        const session = await getServerSession();
+        const supabaseAuth = createClient();
+        const { data: { session } } = await supabaseAuth.auth.getSession();
         if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const searchParams = req.nextUrl.searchParams;
@@ -49,7 +50,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const session = await getServerSession();
+        const supabaseAuth = createClient();
+        const { data: { session } } = await supabaseAuth.auth.getSession();
         if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         const body = await req.json();
         if (!body.title || !body.startDate || !body.endDate) return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -81,7 +83,8 @@ export async function POST(req: NextRequest) {
 // PATCH update existing event
 export async function PATCH(req: NextRequest) {
     try {
-        const session = await getServerSession();
+        const supabaseAuth = createClient();
+        const { data: { session } } = await supabaseAuth.auth.getSession();
         if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const body = await req.json();
@@ -121,7 +124,8 @@ export async function PATCH(req: NextRequest) {
 // DELETE an event
 export async function DELETE(req: NextRequest) {
     try {
-        const session = await getServerSession();
+        const supabaseAuth = createClient();
+        const { data: { session } } = await supabaseAuth.auth.getSession();
         if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const eventId = req.nextUrl.searchParams.get('eventId');

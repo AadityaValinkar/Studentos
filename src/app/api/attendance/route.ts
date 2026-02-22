@@ -1,15 +1,28 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { createClient } from "@/lib/supabase-server";
 import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
     try {
-        const session = await getServerSession();
-        if (!session || !session.user?.email) {
+        const supabaseAuth = createClient();
+        const { data: { session } } = await supabaseAuth.auth.getSession();
+
+        if (!session?.user?.email) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const { totalClasses, attendedClasses } = await req.json();
+
+        // First, get the user's ID to ensure they exist and for potential future use
+        const { error: userFetchError } = await supabase
+            .from('users')
+            .select('id')
+            .eq('email', session.user.email)
+            .single();
+
+        if (userFetchError) {
+            return NextResponse.json({ error: "User not found or database error" }, { status: 404 });
+        }
 
         const { data: user, error } = await supabase
             .from('users')

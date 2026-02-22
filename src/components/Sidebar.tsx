@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Calendar, Map, Activity, Layers, Settings, LogIn, Info, Target, Sun, Moon } from 'lucide-react';
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/useSession";
 import { motion } from "motion/react";
 import ProfileDropdown from './ui/profile-dropdown';
 import AnimatedToggle from './ui/animated-toggle';
