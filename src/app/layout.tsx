@@ -1,11 +1,25 @@
 import type { Metadata } from 'next'
-import { Inter_Tight } from 'next/font/google'
+import { Inter, Outfit, Space_Grotesk, Inter_Tight } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/components/Providers'
-import Sidebar from '@/components/Sidebar'
 import { CommandPalette } from '@/components/ui/command-palette'
 
 const interTight = Inter_Tight({ subsets: ['latin'] })
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-body',
+})
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-heading',
+})
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-accent',
+})
 
 export const metadata: Metadata = {
   title: 'StudentOS | Career Intelligence',
@@ -14,6 +28,7 @@ export const metadata: Metadata = {
 
 import { createClient } from '@/lib/supabase-server'
 import { UsernameSetupModal } from '@/components/ui/username-setup-modal'
+import ResponsiveNavWrapper from '@/components/ResponsiveNavWrapper'
 
 export default async function RootLayout({
   children,
@@ -21,10 +36,11 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const supabase = createClient();
-  const [{ data: { session } }, { data: { user }, error }] = await Promise.all([
-    supabase.auth.getSession(),
-    supabase.auth.getUser()
-  ]);
+  const { data: { user }, error } = await supabase.auth.getUser();
+  // Since we are using getUser for security, we can derive a mock session or just pass user if Providers allows.
+  // Actually, for Supabase Auth, session usually comes from getSession but getUser is the secure way to verify.
+  // I'll keep getUser and remove getSession. 
+  // If Providers needs a full session object, I might need to construct it or check if SupabaseProvider can handle just user.
 
   let needsProfile = false;
 
@@ -40,25 +56,20 @@ export default async function RootLayout({
     }
   }
 
-  console.log("SERVER SSR SESSION:", session ? "Exists" : "Null", "| ERROR:", error);
+  console.log("SERVER SSR USER:", user ? "Exists" : "Null", "| ERROR:", error);
 
   return (
     <html lang="en" className="dark">
-      <body className={`${interTight.className} bg-[#0a0a0a] text-foreground antialiased selection:bg-indigo-500/30`}>
-        <Providers initialSession={session}>
+      <body className={`${interTight.className} ${inter.variable} ${outfit.variable} ${spaceGrotesk.variable} bg-[#0a0a0a] text-foreground antialiased selection:bg-indigo-500/30`}>
+        <Providers initialSession={null}>
           <UsernameSetupModal isOpen={needsProfile} />
           {/* Noise Overlay */}
           <div className="noise-overlay"></div>
           <CommandPalette />
 
-          <div className="flex h-screen w-full overflow-hidden relative z-10">
-            <Sidebar />
-            <main className="flex-1 relative focus:outline-none overflow-y-auto">
-              <div className="min-h-screen">
-                {children}
-              </div>
-            </main>
-          </div>
+          <ResponsiveNavWrapper>
+            {children}
+          </ResponsiveNavWrapper>
         </Providers>
       </body>
     </html>

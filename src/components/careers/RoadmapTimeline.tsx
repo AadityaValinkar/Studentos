@@ -24,23 +24,23 @@ export function RoadmapTimeline({ title, nodes }: RoadmapTimelineProps) {
     return (
         <div className="p-8 pb-32 max-w-4xl mx-auto min-h-screen animate-in fade-in duration-1000">
 
-            <Link href="/careers" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-8 group">
+            <Link href="/careers" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-8 group">
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                <span className="text-sm font-light tracking-wide">Back to Careers</span>
+                <span className="text-sm font-medium tracking-wide">Back to Careers</span>
             </Link>
 
             <header className="mb-16 text-center">
-                <h1 className="text-4xl md:text-5xl font-light tracking-wide text-white mb-4">
-                    {formatTitle(title)} <span className="font-medium text-indigo-400">Roadmap</span>
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">
+                    {formatTitle(title)} <span className="text-indigo-600 dark:text-indigo-400">Roadmap</span>
                 </h1>
-                <p className="text-slate-400 font-light tracking-wide max-w-2xl mx-auto">
+                <p className="text-slate-600 dark:text-slate-400 font-medium tracking-wide max-w-2xl mx-auto">
                     A strict chronological path to mastering this discipline, powered by open-source data.
                 </p>
             </header>
 
             <div className="relative pt-12">
                 {/* Center Line */}
-                <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-indigo-500/20 to-transparent -translate-x-1/2" />
+                <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-slate-200 dark:bg-gradient-to-b dark:from-transparent dark:via-indigo-500/20 dark:to-transparent -translate-x-1/2" />
 
                 <div className="space-y-16">
                     {nodes.map((node, i) => {
@@ -66,8 +66,8 @@ export function RoadmapTimeline({ title, nodes }: RoadmapTimelineProps) {
 
                                 {/* Content Card */}
                                 <div className={`w-5/12 ${isLeft ? 'text-right pr-8' : 'pl-8'}`}>
-                                    <div className={`glass-card p-5 group hover:border-indigo-500/30 transition-all cursor-default ${isMainTopic ? 'border-indigo-500/20 bg-indigo-500/5' : ''}`}>
-                                        <h4 className={`text-lg font-light tracking-wide ${isMainTopic ? 'text-indigo-100 font-medium' : 'text-slate-300'}`}>
+                                    <div className={`glass-card p-5 group hover:border-indigo-600/30 dark:hover:border-indigo-500/30 transition-all cursor-default ${isMainTopic ? 'border-indigo-200 bg-indigo-50/50 dark:border-indigo-500/20 dark:bg-indigo-500/5' : ''}`}>
+                                        <h4 className={`text-lg font-bold tracking-tight ${isMainTopic ? 'text-indigo-900 dark:text-indigo-100' : 'text-slate-900 dark:text-slate-300'}`}>
                                             {node.label}
                                         </h4>
                                     </div>

@@ -13,7 +13,7 @@ export function MonthGrid({ days, onDayClick }: MonthGridProps) {
         <div className="w-full">
             <div className="grid grid-cols-7 gap-3 mb-4">
                 {weekDays.map(day => (
-                    <div key={day} className="text-center text-xs font-light text-slate-500 uppercase tracking-widest">
+                    <div key={day} className="text-center text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
                         {day}
                     </div>
                 ))}

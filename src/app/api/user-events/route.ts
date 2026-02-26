@@ -8,16 +8,12 @@ import { supabase } from "@/lib/supabase";
 export async function GET(req: NextRequest) {
     try {
         const supabaseAuth = createClient();
-        const { data: { session } } = await supabaseAuth.auth.getSession();
-        if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const { data: { user } } = await supabaseAuth.auth.getUser();
+        if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const searchParams = req.nextUrl.searchParams;
         const start = searchParams.get('start');
         const end = searchParams.get('end');
-
-        // Get User UUID
-        const { data: user, error: userError } = await supabase.from('users').select('id').eq('email', session.user.email).single();
-        if (userError || !user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
         // Select User Events
         let query = supabase.from('user_events').select('*').eq('user_id', user.id).order('start_date', { ascending: true });
@@ -51,13 +47,10 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
     try {
         const supabaseAuth = createClient();
-        const { data: { session } } = await supabaseAuth.auth.getSession();
-        if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const { data: { user } } = await supabaseAuth.auth.getUser();
+        if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         const body = await req.json();
         if (!body.title || !body.startDate || !body.endDate) return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-
-        const { data: user, error: userError } = await supabase.from('users').select('id').eq('email', session.user.email).single();
-        if (userError || !user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
         const { data: newEvent, error: insertError } = await supabase.from('user_events').insert([{
             user_id: user.id,
@@ -84,14 +77,11 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
     try {
         const supabaseAuth = createClient();
-        const { data: { session } } = await supabaseAuth.auth.getSession();
-        if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const { data: { user } } = await supabaseAuth.auth.getUser();
+        if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const body = await req.json();
         if (!body.eventId) return NextResponse.json({ error: "Missing eventId" }, { status: 400 });
-
-        const { data: user, error: userError } = await supabase.from('users').select('id').eq('email', session.user.email).single();
-        if (userError || !user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
         // Map payload fields back to postgres snake_case
         const updatePayload: Record<string, unknown> = {};
@@ -125,14 +115,11 @@ export async function PATCH(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
     try {
         const supabaseAuth = createClient();
-        const { data: { session } } = await supabaseAuth.auth.getSession();
-        if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const { data: { user } } = await supabaseAuth.auth.getUser();
+        if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const eventId = req.nextUrl.searchParams.get('eventId');
         if (!eventId) return NextResponse.json({ error: "Missing eventId" }, { status: 400 });
-
-        const { data: user, error: userError } = await supabase.from('users').select('id').eq('email', session.user.email).single();
-        if (userError || !user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
         const { error: deleteError } = await supabase
             .from('user_events')

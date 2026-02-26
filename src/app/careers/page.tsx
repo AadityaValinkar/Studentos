@@ -35,13 +35,17 @@ export default function CareersHub() {
                     const Icon = map.icon;
                     return (
                         <Link key={map.id} href={`/careers/${map.id}`}>
-                            <div className="glass-card p-6 flex flex-col items-center justify-center text-center h-48 group hover:border-white/20 transition-all cursor-pointer">
+                            <div className="glass-card p-6 flex flex-col items-center justify-center text-center h-56 group hover:border-indigo-500/30 transition-all cursor-pointer relative overflow-hidden">
                                 <div className={`p-4 rounded-2xl mb-4 transition-transform group-hover:scale-110 group-hover:-translate-y-1 ${map.bg}`}>
                                     <Icon className={`w-8 h-8 ${map.color}`} strokeWidth={1.5} />
                                 </div>
-                                <h3 className="text-slate-200 font-light tracking-wide group-hover:text-white transition-colors">
+                                <h3 className="text-slate-200 font-light tracking-wide group-hover:text-white transition-colors mb-2">
                                     {map.title}
                                 </h3>
+                                <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 text-[8px] font-bold text-indigo-400 uppercase tracking-[0.2em]">
+                                    <Globe className="w-3 h-3" />
+                                    Join Community
+                                </div>
                             </div>
                         </Link>
                     )

@@ -11,7 +11,12 @@ export default async function CommunitiesPage() {
     const supabase = createClient();
 
     // Redirect if not authenticated
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    console.log("COMMUNITIES PAGE - SSR USER CHECK:");
+    console.log("- User exists:", !!user);
+    console.log("- Error:", error);
+
     if (!user) {
         redirect("/login");
     }
@@ -32,8 +37,7 @@ export default async function CommunitiesPage() {
     // 1. Fetch all communities
     const { data: communities, error: commError } = await supabase
         .from("communities")
-        .select("*")
-        .order("member_count", { ascending: false });
+        .select("id, name, slug, description, icon, is_private, community_members(count)");
 
     if (commError) {
         console.error("Failed to load communities:", commError);
@@ -53,9 +57,9 @@ export default async function CommunitiesPage() {
     const joinedSet = new Set(memberships?.map(m => m.community_id) || []);
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a]">
-            {/* Ambient Background */}
-            <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="min-h-screen bg-bg-main">
+            {/* Ambient Background (Dark Mode Only) */}
+            <div className="fixed inset-0 pointer-events-none z-0 hidden dark:block">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full" />
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full" />
             </div>
@@ -64,12 +68,12 @@ export default async function CommunitiesPage() {
 
                 {/* Header Section */}
                 <div className="space-y-4">
-                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white flex items-center gap-4">
+                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-text-main flex items-center gap-4">
                         Communities
-                        <span className="px-3 py-1 bg-white/10 text-white/70 text-sm font-semibold rounded-full border border-white/10">BETA</span>
+                        <span className="px-3 py-1 bg-accent-soft text-accent-primary text-xs font-bold rounded-full border border-accent/20">BETA</span>
                     </h1>
-                    <p className="text-lg text-zinc-400 max-w-2xl leading-relaxed">
-                        Anonymous, safely moderated spaces tailored for your campus. Post, ask doubts, and collaborate fully protected by your global alias <span className="text-indigo-400 font-semibold px-1 rounded-md bg-indigo-500/10 border border-indigo-500/20">@{profile.global_username}</span>.
+                    <p className="text-lg text-text-muted max-w-2xl leading-relaxed font-medium">
+                        Anonymous, safely moderated spaces tailored for your campus. Post, ask doubts, and collaborate fully protected by your global alias <span className="text-accent-primary font-bold px-1.5 py-0.5 rounded-lg bg-accent-soft border border-accent/20">@{profile.global_username}</span>.
                     </p>
                 </div>
 
@@ -77,7 +81,6 @@ export default async function CommunitiesPage() {
                 <CommunitiesClient
                     initialCommunities={communities || []}
                     initialJoinedIds={Array.from(joinedSet)}
-                    userId={profile.id}
                 />
             </div>
         </div>

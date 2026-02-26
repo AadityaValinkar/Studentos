@@ -22,28 +22,33 @@ export function CalendarCell({ dayInfo, onClick }: CalendarCellProps) {
     return (
         <div
             onClick={() => onClick && onClick(dayInfo)}
-            className={`group min-h-[110px] p-2 flex flex-col gap-1 rounded-2xl border backdrop-blur-3xl transition-all duration-200 cursor-pointer overflow-hidden relative
-                ${dayInfo.isCurrentMonth ? 'bg-white/[0.02] border-white/5 hover:-translate-y-0.5 hover:bg-white/[0.04]' : 'bg-transparent border-transparent opacity-30'}
-                ${dayInfo.isToday ? 'ring-2 ring-indigo-500/70 bg-indigo-500/5' : ''}
+            className={`group min-h-[110px] p-2 flex flex-col gap-1 rounded-2xl border transition-all duration-200 cursor-pointer overflow-hidden relative
+                ${dayInfo.isCurrentMonth ? 'bg-white dark:bg-white/[0.02] border-slate-200 dark:border-white/5 hover:-translate-y-1 hover:shadow-md dark:shadow-none' : 'bg-transparent border-transparent opacity-30'}
+                ${dayInfo.isToday ? 'ring-2 ring-indigo-600 dark:ring-indigo-500/70 bg-indigo-50 dark:bg-indigo-500/5' : ''}
                 ${outlineClass}
-                ${hasEvents && !outlineClass ? 'border-l-2 border-l-white/10' : ''}
+                ${hasEvents && !outlineClass ? 'border-l-2 border-l-slate-200 dark:border-l-white/10' : ''}
             `}
         >
-            <div className="flex items-center justify-between z-10">
-                <div className={`text-xs font-light px-1 ${dayInfo.isToday ? 'text-indigo-400 font-medium' : 'text-slate-500'}`}>
+            <div className="flex items-start justify-between z-10">
+                <div className={`text-base font-bold tracking-tight ${dayInfo.isToday ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-900 dark:text-slate-500'}`}>
                     {dayInfo.date.getDate()}
                 </div>
                 {dayInfo.isCurrentMonth && (
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity p-1 bg-white/5 rounded-md hover:bg-white/10 text-slate-400 hover:text-white">
-                        <Plus className="w-3 h-3" />
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 bg-slate-100 dark:bg-white/5 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 hover:text-slate-900 dark:hover:text-white">
+                        <Plus className="w-3.5 h-3.5" />
                     </div>
                 )}
             </div>
 
-            <div className="flex flex-col gap-1 overflow-y-auto no-scrollbar mt-1 z-10 pb-1">
-                {dayInfo.events.map((event, index) => (
+            <div className="flex flex-col gap-1 mt-auto pt-1 z-10 overflow-hidden">
+                {dayInfo.events.slice(0, 3).map((event, index) => (
                     <EventBadge key={`${event.id}-${index}`} event={event} />
                 ))}
+                {dayInfo.events.length > 3 && (
+                    <div className="text-[8px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-1 mt-0.5">
+                        + {dayInfo.events.length - 3} more
+                    </div>
+                )}
             </div>
         </div>
     );

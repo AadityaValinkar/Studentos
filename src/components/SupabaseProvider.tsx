@@ -37,9 +37,8 @@ export function SupabaseProvider({
         });
 
         if (!initialSession) {
-            supabaseClient.auth.getSession().then(({ data: { session: currentSession } }) => {
-                setSession(currentSession);
-                setUser(currentSession?.user ?? null);
+            supabaseClient.auth.getUser().then(({ data: { user: currentUser } }) => {
+                setUser(currentUser);
                 setIsLoading(false);
             });
         }

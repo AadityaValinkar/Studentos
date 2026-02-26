@@ -6,13 +6,10 @@ import { supabase } from "@/lib/supabase";
 export async function GET() {
     try {
         const supabaseAuth = createClient();
-        const { data: { session } } = await supabaseAuth.auth.getSession();
-        if (!session?.user?.email) {
+        const { data: { user } } = await supabaseAuth.auth.getUser();
+        if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
-
-        const { data: user, error: userError } = await supabase.from('users').select('id').eq('email', session.user.email).single();
-        if (userError || !user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
         const { data: overrides, error: overridesError } = await supabase
             .from('event_overrides')
@@ -41,8 +38,8 @@ export async function GET() {
 export async function PATCH(req: NextRequest) {
     try {
         const supabaseAuth = createClient();
-        const { data: { session } } = await supabaseAuth.auth.getSession();
-        if (!session?.user?.email) {
+        const { data: { user } } = await supabaseAuth.auth.getUser();
+        if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
@@ -51,9 +48,6 @@ export async function PATCH(req: NextRequest) {
         if (!body.academicEventId) {
             return NextResponse.json({ error: "Missing academicEventId" }, { status: 400 });
         }
-
-        const { data: user, error: userError } = await supabase.from('users').select('id').eq('email', session.user.email).single();
-        if (userError || !user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
         const upsertPayload: Record<string, unknown> = {
             user_id: user.id,

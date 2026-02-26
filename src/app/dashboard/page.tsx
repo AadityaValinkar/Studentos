@@ -1,24 +1,63 @@
-import { TimePressure } from "@/components/dashboard/TimePressure"
-import { MomentumScore } from "@/components/dashboard/MomentumScore"
-import { BunkCalculatorWidget } from "@/components/dashboard/BunkCalculatorWidget"
-import { RealityCheck } from "@/components/dashboard/RealityCheck"
+import { createClient } from "@/lib/supabase-server";
+import { redirect } from "next/navigation";
+import DashboardClient from "./DashboardClient";
+import { calculateCompleteness } from "@/lib/profile-utils";
 
-export default function Dashboard() {
+export default async function DashboardPage() {
+  const supabase = createClient();
+
+  // 1. Get Session
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    redirect("/login");
+  }
+
+  // 2. Fetch Profile
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || !profile) {
+    console.error("Profile fetch error:", profileError);
+    // Even if no profile, we let them through to minimal dash
+  }
+
+  // 3. Calculate Completeness
+  const completeness = profile ? calculateCompleteness(profile) : 0;
+
+  // 4. Fetch Notifications (unread count)
+  const { count: unreadCount } = await supabase
+    .from("notifications")
+    .select("*", { count: 'exact', head: true })
+    .eq("user_id", user.id)
+    .eq("read", false);
+
+  // 5. Fetch Targets
+  const { data: targets } = await supabase
+    .from("academic_targets")
+    .select("*")
+    .eq("user_id", user.id);
+
+  // 6. Fetch Upcoming Events
+  const today = new Date().toISOString().split('T')[0];
+  const { data: upcomingEvents } = await supabase
+    .from("user_events")
+    .select("*")
+    .eq("user_id", user.id)
+    .gte("start_date", today)
+    .order("start_date", { ascending: true })
+    .limit(3);
+
   return (
-    <div className="p-6 pb-20 max-w-7xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 w-full">
-      <header className="mb-12">
-        <h1 className="text-3xl font-light tracking-tight text-slate-900 dark:text-white mb-2">Welcome back.</h1>
-        <p className="text-slate-600 dark:text-slate-400 font-light text-sm">Your semester ends in <span className="text-indigo-500 font-medium">75 days</span>.</p>
-      </header>
-
-      {/* Time Pressure Engine (Full width) */}
-      <TimePressure />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <MomentumScore />
-        <BunkCalculatorWidget />
-        <RealityCheck />
-      </div>
-    </div>
-  )
+    <DashboardClient
+      profile={profile}
+      user={user}
+      unreadCount={unreadCount || 0}
+      initialTargets={targets || []}
+      completeness={completeness}
+      upcomingEvents={upcomingEvents || []}
+    />
+  );
 }

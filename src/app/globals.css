@@ -4,86 +4,139 @@
 
 @layer base {
   :root {
-    --background: #F5F7FA;
-    --foreground: #0B0B0D;
+    /* 1. Base Strategy (Light Mode) */
+    --bg-main: #f8fafc;
+    /* Slate-50 */
+    --bg-card: #ffffff;
+    --border-color: #e2e8f0;
+    /* Slate-200 */
+    --text-primary: #0f172a;
+    /* Slate-900 */
+    --text-secondary: #475569;
+    /* Slate-600 */
+    --accent: #6366f1;
+    /* Indigo-500 */
+    --accent-rgb: 99, 102, 241;
+    --accent-soft: rgba(99, 102, 241, 0.1);
 
-    /* Nothing-style layout constants */
-    --panel: #ffffff;
-    --border: #e2e8f0;
-    --primary: #4f46e5;
+    --radius-panel: 2rem;
+    /* 32px */
+    --radius-card: 1rem;
+    /* 16px */
+
+    /* Shadcn/Legacy Compatibility */
+    --background: 210 40% 98%;
+    --foreground: 222.2 84% 4.9%;
+    --panel: var(--bg-card);
+    --border: 214.3 31.8% 91.4%;
+    --primary: 243 75% 59%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+
+    /* Crisp Elevation */
+    --shadow-premium: 0 4px 12px rgba(15, 23, 42, 0.03), 0 1px 2px rgba(15, 23, 42, 0.05);
+    --shadow-premium-hover: 0 10px 25px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.04);
   }
 
   .dark {
-    --background: #0B0B0D;
-    --foreground: #fafafa;
+    /* 2. Base Strategy (Dark Mode) */
+    --bg-main: #0b0b0d;
+    --bg-card: rgba(255, 255, 255, 0.04);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent: #818cf8;
+    --accent-rgb: 129, 140, 248;
+    --accent-soft: rgba(129, 140, 248, 0.1);
 
-    --panel: rgba(255, 255, 255, 0.03);
-    --border: rgba(255, 255, 255, 0.08);
-    --primary: #6366f1;
+    /* Shadcn/Legacy Compatibility */
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --panel: var(--bg-card);
+    --border: 240 3.7% 15.9%;
+    --primary: 243 75% 59%;
+    --card: 240 10% 3.9%;
+  }
+
+  h1 {
+    @apply font-bold tracking-tight;
+  }
+
+  h2,
+  h3 {
+    @apply font-semibold tracking-tight;
   }
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
   min-height: 100vh;
-  position: relative;
 }
 
-/* Nothing-style Background Textures */
-body::before {
+/* Background Accents (Dark Only) */
+.dark body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: -2;
-  background-image: radial-gradient(circle at center, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
-  pointer-events: none;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(circle at center, rgba(99, 102, 241, 0.06) 0%, transparent 60%);
   pointer-events: none;
 }
 
 .dark body::after {
-  background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-}
-
-/* Noise overlay */
-.noise-overlay {
+  content: '';
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: -1;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
 }
 
 @layer utilities {
+
+  /* The "Glass" system - Professional Redux */
   .glass-panel {
-    @apply bg-[var(--panel)] backdrop-blur-2xl border border-[var(--border)] shadow-[0_8px_32px_#0000001f];
-    transition: all 0.3s ease;
-    border-radius: 1.5rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-premium);
+    border-radius: var(--radius-panel);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Dark mode specific additions for glass-panel */
+  .dark .glass-panel {
+    @apply backdrop-blur-2xl;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   }
 
   .glass-card {
-    @apply bg-white dark:bg-black/20 backdrop-blur-xl border border-black/5 dark:border-white/10 shadow-[0_4px_24px_#00000005] dark:shadow-[0_4px_24px_#00000014];
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    border-radius: 1rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-premium);
+    border-radius: var(--radius-card);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark .glass-card {
+    @apply backdrop-blur-xl;
   }
 
   .glass-card:hover {
-    @apply border-black/10 dark:border-white/20 shadow-[0_8px_32px_#0000000f] dark:shadow-[0_8px_32px_#0000001f] -translate-y-1;
+    box-shadow: var(--shadow-premium-hover);
+    transform: translateY(-2px);
   }
 
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-400;
+  /* Accent Text Utility */
+  .text-indigo-glow {
+    color: var(--accent);
+    text-shadow: 0 0 15px var(--accent-soft);
+  }
+
+  .text-secondary-muted {
+    color: var(--text-secondary);
   }
 }

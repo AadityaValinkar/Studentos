@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Calendar, Map, Activity, Layers, Settings, LogIn, Info, Target, Sun, Moon, Users } from 'lucide-react';
+import { Home, Calendar, Activity, Layers, Settings, LogIn, Info, Target, Sun, Moon, Users, Search, Plus } from 'lucide-react';
 import { useSession } from "@/lib/useSession";
 import { motion } from "motion/react";
 import ProfileDropdown from './ui/profile-dropdown';
@@ -11,13 +11,32 @@ import AnimatedToggle from './ui/animated-toggle';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 
+import { supabaseClient } from '@/lib/supabase-client';
+import { calculateCompleteness, ProfileData } from '@/lib/profile-utils';
+
 export default function Sidebar() {
     const { data: session, status } = useSession();
+    const [completeness, setCompleteness] = useState(0);
 
     useEffect(() => {
-        console.log("UI SESSION STATUS:", status);
-        console.log("UI USER:", session?.user);
-    }, [status, session]);
+        const fetchCompleteness = async () => {
+            if (session?.user?.id) {
+                const { data } = await supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
+
+                if (data) {
+                    setCompleteness(calculateCompleteness(data as ProfileData));
+                }
+            }
+        };
+
+        if (status === 'authenticated') {
+            fetchCompleteness();
+        }
+    }, [session?.user?.id, status]);
     const [isExpanded, setIsExpanded] = useState(false);
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
@@ -30,7 +49,6 @@ export default function Sidebar() {
         { icon: Home, label: 'Dashboard', href: '/dashboard' },
         { icon: Calendar, label: 'Calendar', href: '/calendar' },
         { icon: Target, label: 'Careers', href: '/careers' },
-        { icon: Map, label: 'Campus Map', href: '/map' },
         { icon: Activity, label: 'Bunk Calc', href: '/bunk' },
         { label: "Internships", href: "/internships", icon: Layers },
         { label: "Communities", href: "/communities", icon: Users },
@@ -40,6 +58,17 @@ export default function Sidebar() {
 
     const pathname = usePathname();
     const isPublicRoute = pathname === '/' || pathname === '/login';
+    const isCommunitiesRoute = pathname.startsWith('/communities');
+
+    const communityNavItems = [
+        { icon: Home, label: 'Back to Dashboard', href: '/dashboard' },
+        { icon: Users, label: 'Feed', href: '/communities' },
+        { icon: Search, label: 'Discover', href: '/communities/discover' },
+        { icon: Layers, label: 'My Communities', href: '/communities/mine' },
+        { icon: Plus, label: 'Create Community', href: '/communities/create' },
+    ];
+
+    const currentNavItems = isCommunitiesRoute ? communityNavItems : navItems;
 
     if (isPublicRoute) {
         return null;
@@ -52,11 +81,11 @@ export default function Sidebar() {
                 width: isExpanded ? 240 : 80,
             }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="h-[calc(100vh-2rem)] my-4 ml-4 hidden md:flex flex-col relative z-40 shrink-0"
+            className="h-[calc(100vh-2rem)] my-4 ml-4 hidden lg:flex flex-col relative z-40 shrink-0"
             onMouseEnter={() => setIsExpanded(true)}
             onMouseLeave={() => setIsExpanded(false)}
         >
-            <div className="flex-1 w-full bg-white/50 dark:bg-black/40 backdrop-blur-xl border border-black/10 dark:border-white/20 rounded-3xl flex flex-col p-4 shadow-[0_8px_32px_rgba(0,0,0,0.05)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden relative">
+            <div className="flex-1 w-full bg-white dark:bg-black/40 dark:backdrop-blur-xl border border-slate-200 dark:border-white/20 rounded-3xl flex flex-col p-4 shadow-[0_4px_20px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden relative">
 
                 {/* Header / Logo */}
                 <div className="flex items-center gap-3 px-2 py-4 mb-8 h-12 shrink-0 overflow-hidden">
@@ -74,15 +103,23 @@ export default function Sidebar() {
 
                 {/* Navigation */}
                 <nav className="flex-1 space-y-2">
-                    {navItems.map((item) => {
+                    {currentNavItems.map((item) => {
                         const Icon = item.icon;
+                        const isActive = pathname === item.href;
+
                         return (
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className="flex items-center gap-3 px-3 py-3 rounded-2xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-all group relative"
+                                className={`flex items-center gap-3 px-3 py-3 rounded-2xl text-sm font-medium transition-all group relative ${isActive
+                                    ? "bg-indigo-50 dark:bg-white/10 text-indigo-600 dark:text-indigo-400"
+                                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5"
+                                    }`}
                             >
-                                <Icon className="w-5 h-5 flex-shrink-0 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors" />
+                                <Icon className={`w-5 h-5 flex-shrink-0 transition-colors ${isActive
+                                    ? "text-indigo-600 dark:text-indigo-400"
+                                    : "group-hover:text-indigo-500 dark:group-hover:text-indigo-400"
+                                    }`} />
 
                                 <motion.span
                                     animate={{ opacity: isExpanded ? 1 : 0, display: isExpanded ? "block" : "none" }}
@@ -93,7 +130,7 @@ export default function Sidebar() {
 
                                 {/* Tooltip for collapsed state */}
                                 {!isExpanded && (
-                                    <div className="absolute left-14 px-3 py-1.5 bg-white dark:bg-zinc-800 text-slate-900 dark:text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-xl border border-black/10 dark:border-white/10 transition-opacity">
+                                    <div className="absolute left-14 px-3 py-1.5 bg-white dark:bg-zinc-800 text-slate-900 dark:text-white text-xs rounded-lg opacity-0 lg:group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-xl border border-black/10 dark:border-white/10 transition-opacity">
                                         {item.label}
                                     </div>
                                 )}
@@ -129,6 +166,7 @@ export default function Sidebar() {
                                     subscription: "PRO",
                                     model: "Gemini 1.5 Flash"
                                 }}
+                                percentage={completeness}
                             />
                         </div>
                     ) : (

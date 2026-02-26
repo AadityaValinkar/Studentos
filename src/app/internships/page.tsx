@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Briefcase, MapPin, Loader2, Sparkles, Navigation, Globe } from "lucide-react";
+import { Briefcase, MapPin, Loader2, Sparkles, Navigation, Globe, Target } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 
 // Our curated mock data identifying different sectors/roles
@@ -104,8 +105,14 @@ export default function InternshipsGlobalPage() {
         loadJobs();
     }, []);
 
+    const router = useRouter();
+
     const handleViewDetails = (job: typeof OPPORTUNITIES[0]) => {
-        setSelectedJob(job);
+        if (window.innerWidth < 1024) {
+            router.push(`/internships/${job.id}`);
+        } else {
+            setSelectedJob(job);
+        }
     };
 
     return (
@@ -229,10 +236,28 @@ export default function InternshipsGlobalPage() {
                                         </div>
 
                                         <div>
-                                            <p className="text-xs text-slate-500 uppercase tracking-widest mb-2 mt-6">Application</p>
+                                            <p className="text-xs text-slate-500 uppercase tracking-widest mb-4 mt-6 font-bold">OS Integration</p>
+                                            <div className="grid grid-cols-2 gap-3 mb-6">
+                                                <button
+                                                    onClick={() => {/* Logic to add to Goals */ }}
+                                                    className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all group"
+                                                >
+                                                    <Target className="w-5 h-5 text-slate-400 group-hover:text-emerald-400 mb-2" />
+                                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Track Goal</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => {/* Logic to add to Calendar */ }}
+                                                    className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all group"
+                                                >
+                                                    <Navigation className="w-5 h-5 text-slate-400 group-hover:text-emerald-400 mb-2" />
+                                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Set Deadline</span>
+                                                </button>
+                                            </div>
+
+                                            <p className="text-xs text-slate-500 uppercase tracking-widest mb-2 font-bold">External Application</p>
                                             <a href={selectedJob.url} target="_blank" rel="noopener noreferrer" className="w-full bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl p-4 flex items-center justify-center gap-3 transition-colors shadow-[0_4px_20px_rgba(16,185,129,0.3)]">
                                                 <Globe className="w-4 h-4" />
-                                                <span className="font-medium tracking-wide">Ready to Apply</span>
+                                                <span className="font-medium tracking-wide">Apply on Official Site</span>
                                             </a>
                                         </div>
 

@@ -25,45 +25,46 @@ export function AcademicCalendar() {
 
     const getDayColor = (intensity: number) => {
         switch (intensity) {
-            case 0: return "bg-[#1e2230] border-white/5";
-            case 1: return "bg-indigo-900/50 border-indigo-500/20";
-            case 2: return "bg-indigo-700/60 border-indigo-500/30";
-            case 3: return "bg-indigo-500/80 border-indigo-400/50";
-            case 4: return "bg-indigo-400 border-indigo-300";
-            default: return "bg-indigo-400 border-indigo-300";
+            case 0: return "bg-bg-card border-border-muted/30";
+            case 1: return "bg-accent-primary/10 border-accent-primary/20";
+            case 2: return "bg-accent-primary/30 border-accent-primary/30";
+            case 3: return "bg-accent-primary/60 border-accent-primary/50";
+            case 4: return "bg-accent-primary border-accent-primary/80";
+            default: return "bg-accent-primary border-accent-primary/80";
         }
     };
 
     const getEventIcon = (type?: string) => {
         switch (type) {
-            case "Exam": return <Target className="w-3 h-3 text-red-400" />;
-            case "Hackathon": return <Flag className="w-3 h-3 text-purple-400" />;
-            default: return <CalendarIcon className="w-3 h-3 text-indigo-400" />;
+            case "Exam": return <Target className="w-3 h-3 text-red-500" />;
+            case "Hackathon": return <Flag className="w-3 h-3 text-amber-500" />;
+            default: return <CalendarIcon className="w-3 h-3 text-accent-primary" />;
         }
     };
 
     return (
-        <div className="glass-panel p-8 rounded-2xl border-t border-t-white/10 relative">
-            <div className="absolute top-0 right-10 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl -mt-10 pointer-events-none" />
+        <div className="glass-panel p-8 rounded-[2rem] border-border-muted relative overflow-hidden group">
+            {/* Background Decor (Dark Only) */}
+            <div className="absolute top-0 right-10 w-64 h-64 bg-accent-primary/5 rounded-full blur-[80px] -mt-10 pointer-events-none hidden dark:block" />
 
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 relative z-10">
                 <div>
-                    <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-1">
-                        <CalendarIcon className="w-5 h-5 text-indigo-400" />
+                    <h2 className="text-xl font-bold text-text-primary flex items-center gap-3 mb-1">
+                        <CalendarIcon className="w-6 h-6 text-accent-primary" />
                         Academic Timeline
                     </h2>
-                    <p className="text-slate-400 text-sm">365-day strategic overview of your engagements</p>
+                    <p className="text-text-muted text-sm font-medium">365-day strategic overview of your engagements</p>
                 </div>
 
-                <div className="flex gap-4 text-xs text-slate-400 bg-black/20 p-2 rounded-lg border border-white/5">
+                <div className="flex gap-4 text-[10px] font-bold uppercase tracking-wider text-text-muted bg-bg-base/50 backdrop-blur-sm p-3 rounded-2xl border border-border-muted/50">
                     <div className="flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-sm bg-[#1e2230] border border-white/5" /> None
+                        <span className="w-3 h-3 rounded-[3px] bg-bg-card border border-border-muted" /> None
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-sm bg-indigo-500/80 border border-indigo-400/50" /> Focus
+                        <span className="w-3 h-3 rounded-[3px] bg-accent-primary/60 border border-accent-primary/20" /> Focus
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="w-3 h-3 rounded-sm bg-indigo-400 border border-indigo-300" /> Event
+                        <span className="w-3 h-3 rounded-[3px] bg-accent-primary border border-accent-primary/40" /> Event
                     </div>
                 </div>
             </div>
@@ -82,17 +83,17 @@ export function AcademicCalendar() {
                             >
                                 {/* Tooltip */}
                                 {hoveredDay === day.dateStr && (
-                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max p-2.5 rounded-lg bg-[#151821] border border-white/10 shadow-xl z-50 pointer-events-none backdrop-blur-xl">
-                                        <p className="text-xs font-semibold text-white mb-1.5">
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-max p-3.5 rounded-2xl bg-bg-card border border-border-subtle shadow-2xl z-50 pointer-events-none backdrop-blur-2xl">
+                                        <p className="text-[10px] uppercase font-bold tracking-widest text-text-muted opacity-60 mb-2">
                                             {format(day.date, "MMM d, yyyy")}
                                         </p>
                                         {day.hasEvent ? (
-                                            <div className="flex items-center gap-1.5 text-xs text-slate-300 bg-white/5 p-1.5 rounded-md">
+                                            <div className="flex items-center gap-3 text-xs text-text-primary bg-bg-base/80 p-2 rounded-xl border border-border-muted">
                                                 {getEventIcon(day.eventType)}
-                                                <span className="font-medium">{day.eventType}</span>
+                                                <span className="font-bold">{day.eventType}</span>
                                             </div>
                                         ) : (
-                                            <p className="text-xs text-slate-500">No events scheduled</p>
+                                            <p className="text-xs font-medium text-text-muted/60 lowercase italic">No events scheduled</p>
                                         )}
                                     </div>
                                 )}

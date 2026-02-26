@@ -1,4 +1,5 @@
 import { AcademicEvent } from '@/lib/event-mapper';
+import { format } from 'date-fns';
 
 interface TimelineViewProps {
     events: AcademicEvent[];
@@ -23,14 +24,14 @@ export function TimelineView({ events }: TimelineViewProps) {
     return (
         <div className="max-w-3xl mx-auto py-12 relative">
             {/* Center Line */}
-            <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-white/10 -translate-x-1/2" />
+            <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-border-muted/50 -translate-x-1/2" />
 
             <div className="space-y-12">
                 {sortedEvents.map((event, i) => {
                     const isLeft = i % 2 === 0;
                     const dateDisplay = event.start === event.end
-                        ? new Date(event.start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-                        : `${new Date(event.start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${new Date(event.end).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+                        ? format(new Date(event.start), "MMM d")
+                        : `${format(new Date(event.start), "MMM d")} - ${format(new Date(event.end), "MMM d")}`;
 
                     return (
                         <div key={`${event.id}-${i}`} className={`flex items-center justify-between w-full ${isLeft ? 'flex-row-reverse' : ''}`}>
@@ -43,17 +44,19 @@ export function TimelineView({ events }: TimelineViewProps) {
                                 <div className={`w-3 h-3 rounded-full ${typeColors[event.type] || 'bg-white'}`} />
                             </div>
 
-                            {/* Content Card */}
                             <div className={`w-5/12 ${isLeft ? 'text-right pr-8' : 'pl-8'}`}>
-                                <div className="glass-card p-5 group hover:border-white/20 transition-all cursor-default">
-                                    <div className={`text-xs font-medium tracking-widest uppercase mb-2 ${typeColors[event.type]?.replace('bg-', 'text-')} opacity-80`}>
+                                <div className="glass-panel p-5 group hover:border-accent-primary/20 transition-all cursor-default relative overflow-hidden">
+                                    {/* Background Glow (Dark Only) */}
+                                    <div className="absolute inset-0 bg-accent-primary/2 dark:block hidden" />
+
+                                    <div className={`text-[10px] font-bold tracking-[0.2em] uppercase mb-2 ${typeColors[event.type]?.replace('bg-', 'text-') || 'text-accent-primary'} opacity-80 relative z-10`}>
                                         {event.type.replace('_', ' ')}
                                     </div>
-                                    <h4 className="text-lg font-light text-white tracking-wide mb-1">{event.title}</h4>
-                                    <p className="text-sm font-light text-slate-500">{dateDisplay}</p>
+                                    <h4 className="text-lg font-bold text-text-primary tracking-tight mb-1 relative z-10">{event.title}</h4>
+                                    <p className="text-sm font-medium text-text-muted relative z-10">{dateDisplay}</p>
 
                                     {event.description && (
-                                        <p className="text-xs text-slate-400 mt-3 pt-3 border-t border-white/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <p className="text-xs text-text-muted mt-3 pt-3 border-t border-border-muted opacity-0 group-hover:opacity-100 transition-opacity relative z-10">
                                             {event.description}
                                         </p>
                                     )}

@@ -1,27 +1,59 @@
-import { AlertTriangle } from 'lucide-react';
+"use client";
+import { Target } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-export function RealityCheck() {
+interface RealityCheckProps {
+    profile: Record<string, unknown> | null;
+}
+
+export function RealityCheck({ profile }: RealityCheckProps) {
+    if (!profile) return (
+        <div className="glass-panel p-6 flex flex-col justify-center items-center h-full opacity-60 border-dashed border-border-muted bg-bg-card/50">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted italic">Complete profile for insights</p>
+        </div>
+    );
+    const hasDrift = (profile?.cgpa as number) < (profile?.target_cgpa as number);
+    const isAtRisk = (profile?.attendance as number) < 75;
+
     return (
-        <div className="glass-card p-6 flex flex-col justify-between group h-full hover:border-black/10 dark:hover:border-white/20 transition-all border-l-4 border-l-orange-500 dark:border-l-orange-400 pointer-events-auto">
-            <div className="flex justify-between items-start mb-6">
-                <h3 className="font-light text-slate-700 dark:text-slate-300 flex items-center gap-2 tracking-wide">
-                    <AlertTriangle className="w-4 h-4 text-orange-500 dark:text-orange-400 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
-                    Reality Check
+        <div className={cn(
+            "glass-panel p-8 flex flex-col justify-between group h-full transition-all duration-500 relative overflow-hidden",
+            isAtRisk ? "border-red-500/30 hover:border-red-500/50" : "hover:border-accent-primary/30"
+        )}>
+            {isAtRisk && (
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-transparent" />
+            )}
+
+            <div className="flex justify-between items-start mb-6 relative z-10">
+                <h3 className="text-text-muted text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-2">
+                    <Target className="w-4 h-4 text-accent-primary" strokeWidth={2.5} />
+                    Academic Analysis
                 </h3>
             </div>
 
-            <div className="flex-1 flex flex-col justify-center space-y-4">
+            <div className="flex-1 flex flex-col justify-center space-y-4 relative z-10">
                 <div>
-                    <h4 className="text-slate-900 dark:text-white text-base font-light mb-1">CGPA Drift Detected</h4>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-light tracking-wide">
-                        Trajectory suggests <span className="text-slate-900 dark:text-slate-300 font-normal">7.2</span>. You need an average of <span className="text-slate-900 dark:text-slate-300 font-normal">8.5</span> this semester to maintain application eligibility.
+                    <div className="flex items-center gap-2 mb-2">
+                        <h4 className="text-text-primary text-base font-bold tracking-tight">
+                            {hasDrift ? 'CGPA Drift Analysis' : 'On Track for Target'}
+                        </h4>
+                        {isAtRisk && (
+                            <span className="bg-red-500/10 text-red-500 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border border-red-500/20">
+                                Risk
+                            </span>
+                        )}
+                    </div>
+                    <p className="text-xs text-text-muted leading-relaxed font-bold tracking-tight opacity-70">
+                        Your current CGPA is <span className="text-text-primary font-black">{profile.cgpa as number}</span>.
+                        To hit your target of <span className="text-text-primary font-black">{profile.target_cgpa as number}</span>,
+                        maintain a semester SGPA of {Math.min(10, (profile.target_cgpa as number) + 0.5).toFixed(1)}+.
                     </p>
                 </div>
 
-                <div className="pt-4 border-t border-black/5 dark:border-white/5">
-                    <p className="text-xs text-orange-600 dark:text-orange-300/80 leading-relaxed font-light tracking-wide">
-                        <span className="text-orange-500 dark:text-orange-300/50 block mb-1 uppercase tracking-widest text-[10px]">Action required</span>
-                        Focus heavily on Core AI & Data Structures this month.
+                <div className="pt-4 border-t border-border-muted/50">
+                    <p className="text-xs text-accent-primary leading-relaxed font-bold tracking-tight">
+                        <span className="text-text-muted block mb-1 uppercase tracking-[0.2em] text-[10px] opacity-40">Performance Status</span>
+                        Attendance ({profile.attendance as number}%) is {(profile.attendance as number) >= 75 ? 'healthy' : 'below threshold'}.
                     </p>
                 </div>
             </div>
