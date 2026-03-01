@@ -2,26 +2,22 @@ import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 
 export function createClient() {
-    console.log("SERVER URL:", process.env.NEXT_PUBLIC_SUPABASE_URL)
-    console.log("SERVER KEY:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? "EXISTS" : "MISSING")
+  const cookieStore = cookies()
 
-    return createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co",
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder_anon_key",
-        {
-            cookies: {
-                getAll() {
-                    return cookies().getAll()
-                },
-                setAll(cookiesToSet) {
-                    try {
-                        cookiesToSet.forEach(({ name, value, options }) =>
-                            cookies().set(name, value, options)
-                        )
-                    } catch {
-                    }
-                },
-            }
-        }
-    )
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options)
+          })
+        },
+      },
+    }
+  )
 }
